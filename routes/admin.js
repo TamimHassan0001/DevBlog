@@ -198,6 +198,72 @@ router.get("/login", (req, res, next) => {
 });
 
 /**
+ * Route handler for the sign-up page.
+ * Renders the admin signup template.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {void}
+ */
+router.get("/signup", (req, res, next) => {
+  res.render("admin/signup", { title: "Sign Up" });
+});
+
+/**
+ * Route handler for the sign-up form submission.
+ * Creates a new user account with the provided name, email, and password.
+ * If successful, redirects to the login page with a success message.
+ * If validation fails or user already exists, renders the signup template with an error message.
+ *
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise<void>}
+ */
+router.post("/signup", async (req, res, next) => {
+  try {
+    const { name, email, password, confirmPassword } = req.body;
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+      return res.render("admin/signup", {
+        title: "Sign Up",
+        error: "Passwords do not match",
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.render("admin/signup", {
+        title: "Sign Up",
+        error: "Email already registered",
+      });
+    }
+
+    // Hash password using same method as login (SHA256)
+    const hashedPassword = CryptoJS.SHA256(password).toString();
+
+    // Create new user
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    res.render("admin/signup", {
+      title: "Sign Up",
+      success: "Account created successfully! Please login.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * Route handler for the login form submission.
  * Authenticates the user based on the provided email and password.
  * If authentication is successful, sets a user cookie and redirects to the admin page.

@@ -17,6 +17,7 @@ const rl = readline.createInterface({
 // Function to hash password
 const hashPassword = (password) => {
   const hashedPassword = CryptoJS.SHA256(password).toString();
+  console.log(hashedPassword);
   return hashedPassword;
 };
 
