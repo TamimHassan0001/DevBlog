@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 module.exports = connectToMongo = async () => {
   try {
     const conn = await mongoose.connect(
-      'mongodb://localhost:27017/devblog'
+      'mongodb+srv://mohammad:12345678999@devblog.bv8alzl.mongodb.net/?appName=devblog'
     );
     console.log(`Connection Success`);
   } catch (e) {
