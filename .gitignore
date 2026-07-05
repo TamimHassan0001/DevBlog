@@ -63,7 +63,6 @@ typings/
 # Images files
 *.jpg
 *.jpeg
-*.png
 *.gif
 *.bmp
 *.svg
